@@ -2,8 +2,10 @@
 
 A python/modelica based simulation environment.
 
-[![Build Status](https://travis-ci.org/jgoppert/pymola.svg)](https://travis-ci.org/jgoppert/pymola)
-[![Coverage Status](https://img.shields.io/coveralls/jgoppert/pymola.svg)](https://coveralls.io/r/jgoppert/pymola)
+[![Build Status](https://travis-ci.org/jackvreeken/pymola.svg)](https://travis-ci.org/jackvreeken/pymola)
+[![Build status](https://ci.appveyor.com/api/projects/status/7spiw3or4qpm40cw/branch/master?svg=true)](https://ci.appveyor.com/project/jackvreeken/pymola/branch/master)
+[![Coverage Status](https://coveralls.io/repos/github/jackvreeken/pymola/badge.svg?branch=master)](https://coveralls.io/github/jackvreeken/pymola?branch=master)
+
 
 ## Install
 
