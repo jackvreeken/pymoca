@@ -910,9 +910,9 @@ class Class(Node):
         """
         self.initial_equations.remove(e)
 
-    def extend(self, other: "Class") -> None:
-        self._extend(other)
-        self.update_parent_refs()
+    # def extend(self, other: "Class") -> None:
+        # self._extend(other)
+        # self.update_parent_refs()
 
     def _update_parent_refs(self, parent: "Class") -> None:
         for c in parent.classes.values():

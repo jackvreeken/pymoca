@@ -842,11 +842,6 @@ class InstanceTree(ast.Tree):
         if isinstance(class_, ast.Symbol):
             raise InstantiationError(f"Found Symbol for {class_name} but need Class to instantiate")
         instance = self._instantiate_class(class_, ast.ClassModification(), self)
-
-        # Update the parents of the instantiated instance, and merge into one big tree
-        self._instantiate_parents_partially(instance)  # Results in a different `instance.root`
-        self.extend(instance.root)  # Bringing it back to the original one
-
         return instance
 
     def _instantiate_class(
@@ -930,6 +925,8 @@ class InstanceTree(ast.Tree):
 
         if not partially:
             new_class.fully_instantiated = True
+
+        self._instantiate_parents_partially(new_class)
 
         return new_class
 
@@ -1079,7 +1076,6 @@ class InstanceTree(ast.Tree):
             if not isinstance(parent, (InstanceTree, ast.InstanceClass)):
                 print(f"Partially instantiating parents of {instance.full_reference()}")
                 self._instantiate_parents_partially(instance)
-                self.extend(instance.root)
 
         else:
             instance = ast.InstanceSymbol(
@@ -1176,6 +1172,33 @@ class InstanceTree(ast.Tree):
         return instance
 
     def _instantiate_parents_partially(
+        self,
+        class_: ast.InstanceClass,
+    ) -> None:
+
+        ALREADY_CALLED_VAR = "_instantiate_parents_partially_in_progress"
+
+        # Use a static variable to detect the resursion
+        if hasattr(self, ALREADY_CALLED_VAR):
+            # Continue the recursion upwards
+            self._instantiate_parents_partially_helper(class_)
+        else:
+            setattr(self, ALREADY_CALLED_VAR, True)
+
+            # Call below results in a different `class_.root` than `self`
+            self._instantiate_parents_partially_helper(class_)
+
+            # And now we merge the tree. Note that we then only do this once,
+            # for the first call to this function.
+            self._extend(class_.root)
+
+            # And update the parents from the root all the way back down (rather costly!)
+            self.update_parent_refs()
+
+            delattr(self, ALREADY_CALLED_VAR)
+
+
+    def _instantiate_parents_partially_helper(
         self,
         class_: ast.InstanceClass,
     ) -> None:
